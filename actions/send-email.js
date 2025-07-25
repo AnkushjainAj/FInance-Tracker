@@ -1,21 +1,33 @@
 "use server";
 
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
+import { renderEmail } from "@/lib/render-email";
 
 export async function sendEmail({ to, subject, react }) {
-  const resend = new Resend(process.env.RESEND_API_KEY || "");
-
   try {
-    const data = await resend.emails.send({
-      from: "Finance App <onboarding@resend.dev>",
-      to,
-      subject,
-      react,
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
     });
 
-    return { success: true, data };
+    // Convert React component to HTML using @react-email/render
+    const htmlContent = await renderEmail(react);
+
+    const mailOptions = {
+      from: `"Finance App" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html: htmlContent,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return { success: true };
   } catch (error) {
-    console.error("Failed to send email:", error);
+    console.error("Email sending failed:", error);
     return { success: false, error };
   }
 }
