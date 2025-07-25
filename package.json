@@ -2,14 +2,15 @@
   "name": "finance-platform",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "inngest": "node ./node_modules/inngest/cli.js dev",
+"scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "email": "email dev",
-    "postinstall": "prisma generate"
+    "inngest": "node ./node_modules/inngest/cli.js dev",
+    "email": "npx @react-email/cli dev",
+    "postinstall": "prisma generate",
+    "vercel-build": "npm install --legacy-peer-deps && next build"
   },
   "dependencies": {
     "@arcjet/next": "^1.0.0-alpha.34",
